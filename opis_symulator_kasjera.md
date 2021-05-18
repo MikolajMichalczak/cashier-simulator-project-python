@@ -1,4 +1,4 @@
-<b>Link do repozytorium:</b>
+ <b>Link do repozytorium:</b>
 https://github.com/MikolajMichalczak/cashier-simulator-project-python
 
 <b>Opis projektu:</b>
