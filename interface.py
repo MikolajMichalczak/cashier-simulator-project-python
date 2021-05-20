@@ -6,6 +6,8 @@ class Ui:
 
     def __init__(self, *args, **kwargs):
 
+        self.cleared_entry = True
+
         self.window = tk.Tk()
         frame_left = tk.Frame(master=self.window, background="red")
         frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
@@ -49,24 +51,38 @@ class Ui:
         weigh_button = tk.Button(master=numerical_button_frame, text="Zważ", padx=15, pady=10, font=fnt.Font(size=10))
         weigh_button.pack()
 
-        self.ent_weigh = tk.Entry(master=frame_right, font=fnt.Font(size=20), text="1", state=tk.DISABLED)
+        self.ent_weigh = tk.Entry(master=frame_right, font=fnt.Font(size=20), text="1")
         self.ent_weigh.place(width=300, height=50, relx=0.5, rely=0.15, anchor=tk.CENTER)
+        self.ent_weigh.insert(0, 1)
+        self.ent_weigh.configure(state=tk.DISABLED)
 
     def add_number_to_entry(self, number):
         self.ent_weigh.configure(state=tk.NORMAL)
-        current_text = self.ent_weigh.get()
-        self.ent_weigh.delete(0, tk.END)
-        self.ent_weigh.insert(0, current_text + number)
+        if self.cleared_entry:
+            self.ent_weigh.delete(0, tk.END)
+            self.ent_weigh.insert(0, number)
+            self.cleared_entry = False
+        else:
+            current_text = self.ent_weigh.get()
+            self.ent_weigh.delete(0, tk.END)
+            self.ent_weigh.insert(0, current_text + number)
+
         self.ent_weigh.configure(state=tk.DISABLED)
 
     def clear_entry(self):
         self.ent_weigh.configure(state=tk.NORMAL)
         self.ent_weigh.delete(0, tk.END)
+        self.ent_weigh.insert(0, 1)
         self.ent_weigh.configure(state=tk.DISABLED)
+        self.cleared_entry = True
 
     def backspace_entry(self):
         self.ent_weigh.configure(state=tk.NORMAL)
-        current_text = self.ent_weigh.get()
-        self.ent_weigh.delete(0, tk.END)
-        self.ent_weigh.insert(0, current_text[:-1])
+        if len(self.ent_weigh.get()) == 1:
+            self.ent_weigh.delete(0, tk.END)
+            self.ent_weigh.insert(0, 1)
+        else:
+            self.ent_weigh.delete(len(self.ent_weigh.get())-1, tk.END)
+            self.cleared_entry = True
+
         self.ent_weigh.configure(state=tk.DISABLED)
