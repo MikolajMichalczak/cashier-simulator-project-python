@@ -11,19 +11,38 @@ class Ui:
         self.item_click_callback = item_click_callback
 
         self.window = tk.Tk()
-        frame_left = tk.Frame(master=self.window, background="red")
-        frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.frame_left = tk.Frame(master=self.window, background="red")
+        self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
-        frame_right = tk.Frame(master=self.window, background="yellow")
-        frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.frame_right = tk.Frame(master=self.window, background="yellow")
+        self.frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
-        frame_right_numerical_btns = tk.Frame(master=frame_right, background="yellow")
-        frame_right_numerical_btns.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+        self.frame_right_numerical_btns = tk.Frame(master=self.frame_right, background="yellow")
+        self.frame_right_numerical_btns.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+
+        self.frame_loss = tk.Frame(master=self.window)
+        self.frame_end = tk.Frame(master=self.window)
+
+        self.try_again_btn = tk.Button(master=self.frame_loss, text="Rozpocznij ponownie", padx=15, pady=10,
+                                       font=fnt.Font(size=10),
+                                       command=lambda: self.start_again())
+        self.try_again_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+
+        lbl_loss = tk.Label(master=self.frame_loss, text="Przegrana", font=fnt.Font(size=30))
+        lbl_loss.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+
+        self.try_again_btn_end = tk.Button(master=self.frame_end, text="Rozpocznij ponownie", padx=15, pady=10,
+                                           font=fnt.Font(size=10),
+                                           command=lambda: self.start_again_end())
+        self.try_again_btn_end.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+
+        lbl_end = tk.Label(master=self.frame_end, text="Koniec", font=fnt.Font(size=30))
+        lbl_end.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
         for i in range(4):
             for j in range(3):
                 numerical_btn_frame = tk.Frame(
-                    master=frame_right_numerical_btns,
+                    master=self.frame_right_numerical_btns,
                     relief=tk.RAISED,
                     borderwidth=1
                 )
@@ -45,7 +64,7 @@ class Ui:
                 numerical_btn.pack()
 
         numerical_btn_frame = tk.Frame(
-            master=frame_right_numerical_btns,
+            master=self.frame_right_numerical_btns,
             relief=tk.RAISED,
             borderwidth=1
         )
@@ -53,19 +72,19 @@ class Ui:
         weigh_btn = tk.Button(master=numerical_btn_frame, text="Zważ", padx=15, pady=10, font=fnt.Font(size=10))
         weigh_btn.pack()
 
-        self.ent_weigh = tk.Entry(master=frame_right, font=fnt.Font(size=20), text="1")
+        self.ent_weigh = tk.Entry(master=self.frame_right, font=fnt.Font(size=20), text="1")
         self.ent_weigh.place(width=300, height=50, relx=0.5, rely=0.15, anchor=tk.CENTER)
         self.ent_weigh.insert(0, 1)
         self.ent_weigh.configure(state=tk.DISABLED)
 
-        self.next_client_btn = tk.Button(master=frame_left, text="Następny klient", padx=15, pady=10,
+        self.next_client_btn = tk.Button(master=self.frame_left, text="Następny klient", padx=15, pady=10, width=13,
                                          font=fnt.Font(size=10),
                                          command=lambda: self.hide_next_client_btn_and_start())
         self.next_client_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
-        self.item_btn = tk.Button(master=frame_left, padx=15, pady=10,
+        self.item_btn = tk.Button(master=self.frame_left, padx=15, pady=10, width=13,
                                   font=fnt.Font(size=10),
-                                  command=lambda: self.item_click_callback())
+                                  command=lambda: self.item_click_callback(int(self.ent_weigh.get())))
 
     def add_number_to_entry(self, number):
         self.ent_weigh.configure(state=tk.NORMAL)
@@ -102,8 +121,40 @@ class Ui:
         self.next_client_btn.pack_forget()
         self.start_callback()
 
+    def show_next_client_btn(self):
+        self.item_btn.pack_forget()
+        self.next_client_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+
     def show_item(self, text):
         self.item_btn['text'] = text
         self.item_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
+    def show_loss_information(self):
+        self.frame_left.pack_forget()
+        self.frame_right.pack_forget()
+        self.frame_loss.pack(expand=True, fill=tk.BOTH)
 
+    def show_end_information(self):
+        self.frame_left.pack_forget()
+        self.frame_right.pack_forget()
+        self.frame_end.pack(expand=True, fill=tk.BOTH)
+
+    def hide_loss_information(self):
+        self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.frame_loss.pack_forget()
+
+    def hide_end_information(self):
+        self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
+        self.frame_end.pack_forget()
+
+    def start_again(self):
+        self.clear_entry()
+        self.hide_loss_information()
+        self.show_next_client_btn()
+
+    def start_again_end(self):
+        self.clear_entry()
+        self.hide_end_information()
+        self.show_next_client_btn()

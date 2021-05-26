@@ -1,4 +1,5 @@
 import interface
+from exceptions import *
 from datetime import datetime
 import random
 
@@ -9,6 +10,7 @@ items_list = []
 items_counter = 0
 start_time = datetime.now()
 items_size = 0
+should_weigh_item = False
 global current_item_index
 global ui
 global current_item_type
@@ -51,8 +53,9 @@ def start():
     items_list = shuffle_list_and_return([TowarNaSztuki() if x < int(items_size / 2)
                                           else TowarNaWage() for x in range(items_size)])
     current_item_index = 0
-    setCurrentItemInfo(current_item_index)
-    showTowarNaWageItem(current_item) if type(current_item) == TowarNaWage else showTowarNaSztukiItem(current_item)
+    set_current_item_info(current_item_index)
+    show_towar_na_wage_item(current_item) if current_item_type == TowarNaWage else show_towar_na_sztuki_item(
+        current_item)
 
 
 def main():
@@ -71,7 +74,7 @@ def shuffle_list_and_return(x):
     return x
 
 
-def setCurrentItemInfo(index):
+def set_current_item_info(index):
     global current_item_type, current_item
 
     current_item = items_list[index]
@@ -79,16 +82,59 @@ def setCurrentItemInfo(index):
     current_item_type = type(current_item)
 
 
-def showTowarNaWageItem(item: TowarNaWage):
-    ui.show_item(item.name+"x"+str(item.weight))
+def show_towar_na_wage_item(item: TowarNaWage):
+    global should_weigh_item
+    should_weigh_item = True
+    ui.show_item(item.name + " ?kg")
 
 
-def showTowarNaSztukiItem(item: TowarNaSztuki):
-    ui.show_item(item.name+"x"+str(item.quantity))
+def show_towar_na_sztuki_item(item: TowarNaSztuki):
+    ui.show_item(item.name + " x" + str(item.quantity))
 
 
-def on_item_click():
-    pass
+def on_item_click(quantity):
+    global should_weigh_item, items_counter
+    try:
+        if should_weigh_item:
+            should_weigh_item = False
+            raise ItemUnweightedError()
+        else:
+            if current_item_type == TowarNaWage:
+                items_counter += 1
+                show_next_item()
+            else:
+                handle_towar_na_sztuki_click(current_item, quantity)
+    except ItemUnweightedError:
+        ui.show_loss_information()
+
+
+def show_next_item():
+    global items_counter, current_item_index, items_list
+
+    current_item_index += 1
+    if current_item_index != len(items_list):
+        set_current_item_info(current_item_index)
+        show_towar_na_wage_item(current_item) if type(current_item) == TowarNaWage else show_towar_na_sztuki_item(
+            current_item)
+    else:
+        ui.show_end_information()
+
+
+def increase_items_count_from_towar_na_sztuki(item: TowarNaSztuki):
+    global items_counter
+    items_counter += item.quantity
+
+
+def handle_towar_na_sztuki_click(item: TowarNaSztuki, entry_quantity):
+    if item.quantity - entry_quantity < 0:
+        ui.show_loss_information()
+    else:
+        if item.quantity - entry_quantity == 0:
+            increase_items_count_from_towar_na_sztuki(current_item)
+            show_next_item()
+        else:
+            item.quantity -= entry_quantity
+            ui.show_item(item.name + " x" + str(item.quantity))
 
 
 main()
