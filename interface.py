@@ -4,11 +4,12 @@ import tkinter.font as fnt
 
 class Ui:
 
-    def __init__(self, start_callback, item_click_callback):
+    def __init__(self, start_callback, item_click_callback, on_weigh_click_callback):
 
         self.cleared_entry = True
         self.start_callback = start_callback
         self.item_click_callback = item_click_callback
+        self.on_weigh_click_callback = on_weigh_click_callback
 
         self.window = tk.Tk()
         self.frame_left = tk.Frame(master=self.window, background="red")
@@ -69,7 +70,8 @@ class Ui:
             borderwidth=1
         )
         numerical_btn_frame.grid(row=0, column=3, padx=5, pady=5)
-        weigh_btn = tk.Button(master=numerical_btn_frame, text="Zważ", padx=15, pady=10, font=fnt.Font(size=10))
+        weigh_btn = tk.Button(master=numerical_btn_frame, text="Zważ", padx=15, pady=10, font=fnt.Font(size=10),
+                              command=lambda: self.on_weigh_click_callback())
         weigh_btn.pack()
 
         self.ent_weigh = tk.Entry(master=self.frame_right, font=fnt.Font(size=20), text="1")

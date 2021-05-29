@@ -42,6 +42,7 @@ class TowarNaWage(Towar):
     def __init__(self):
         super().__init__()
         self.weight = round(random.uniform(0.05, 2), 2)
+        self.weighed = False
 
 
 def start():
@@ -61,7 +62,7 @@ def start():
 def main():
     global ui
 
-    ui = interface.Ui(start, on_item_click)
+    ui = interface.Ui(start, on_item_click, on_weigh_click)
     window = ui.window
     window.geometry('1000x500')
     window.resizable(False, False)
@@ -83,8 +84,6 @@ def set_current_item_info(index):
 
 
 def show_towar_na_wage_item(item: TowarNaWage):
-    global should_weigh_item
-    should_weigh_item = True
     ui.show_item(item.name + " ?kg")
 
 
@@ -100,12 +99,40 @@ def on_item_click(quantity):
             raise ItemUnweightedError()
         else:
             if current_item_type == TowarNaWage:
-                items_counter += 1
-                show_next_item()
+                if is_towar_na_wage_weighed(current_item):
+                    items_counter += 1
+                    current_item.validate_time = datetime.now()
+                    ui.clear_entry()
+                    show_next_item()
+                else:
+                    should_weigh_item = True
             else:
                 handle_towar_na_sztuki_click(current_item, quantity)
     except ItemUnweightedError:
         ui.show_loss_information()
+
+
+def is_towar_na_wage_weighed(item: TowarNaWage):
+    return True if item.weighed else False
+
+
+def on_weigh_click():
+    global should_weigh_item
+
+    if current_item_type == TowarNaWage:
+        handle_on_weigh_click(current_item)
+    else:
+        # nowy wyjaktek dodac
+        ui.show_loss_information()
+
+
+def handle_on_weigh_click(item: TowarNaWage):
+    global should_weigh_item
+
+    if should_weigh_item:
+        should_weigh_item = False
+        item.weighed = True
+        ui.show_item(item.name + " " + str(item.weight) + " kg")
 
 
 def show_next_item():
@@ -131,9 +158,11 @@ def handle_towar_na_sztuki_click(item: TowarNaSztuki, entry_quantity):
     else:
         if item.quantity - entry_quantity == 0:
             increase_items_count_from_towar_na_sztuki(current_item)
+            ui.clear_entry()
             show_next_item()
         else:
             item.quantity -= entry_quantity
+            ui.clear_entry()
             ui.show_item(item.name + " x" + str(item.quantity))
 
 
