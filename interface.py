@@ -12,19 +12,19 @@ class Ui:
         self.on_weigh_click_callback = on_weigh_click_callback
 
         self.window = tk.Tk()
-        self.frame_left = tk.Frame(master=self.window, background="red")
+        self.frame_left = tk.Frame(master=self.window)
         self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
-        self.frame_right = tk.Frame(master=self.window, background="yellow")
+        self.frame_right = tk.Frame(master=self.window, background="gray83")
         self.frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
 
-        self.frame_right_numerical_btns = tk.Frame(master=self.frame_right, background="yellow")
+        self.frame_right_numerical_btns = tk.Frame(master=self.frame_right, background="gray83")
         self.frame_right_numerical_btns.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
         self.frame_loss = tk.Frame(master=self.window)
         self.frame_end = tk.Frame(master=self.window)
 
-        self.try_again_btn = tk.Button(master=self.frame_loss, text="Rozpocznij ponownie", padx=15, pady=10,
+        self.try_again_btn = tk.Button(master=self.frame_loss, text="Rozpocznij ponownie", padx=15, pady=10, background="gray83",
                                        font=fnt.Font(size=10),
                                        command=lambda: self.start_again())
         self.try_again_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
@@ -79,12 +79,12 @@ class Ui:
         self.ent_weigh.insert(0, 1)
         self.ent_weigh.configure(state=tk.DISABLED)
 
-        self.next_client_btn = tk.Button(master=self.frame_left, text="Następny klient", padx=15, pady=10, width=13,
+        self.next_client_btn = tk.Button(master=self.frame_left, text="Następny klient", padx=15, pady=10, width=13, background="gray83",
                                          font=fnt.Font(size=10),
                                          command=lambda: self.hide_next_client_btn_and_start())
         self.next_client_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
-        self.item_btn = tk.Button(master=self.frame_left, padx=15, pady=10, width=13,
+        self.item_btn = tk.Button(master=self.frame_left, padx=15, pady=10, width=13, background="gray83",
                                   font=fnt.Font(size=10),
                                   command=lambda: self.item_click_callback(int(self.ent_weigh.get())))
 

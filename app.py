@@ -11,6 +11,8 @@ items_counter = 0
 start_time = datetime.now()
 items_size = 0
 should_weigh_item = False
+user_lost = False
+validating_finished = False
 global current_item_index
 global ui
 global current_item_type
@@ -46,13 +48,14 @@ class TowarNaWage(Towar):
 
 
 def start():
-    global items_counter, start_time, items_size, items_list, current_item_index
+    global items_counter, start_time, items_size, items_list, current_item_index, user_lost, validating_finished
 
+    user_lost = False
+    validating_finished = False
     items_counter = 0
     start_time = datetime.now()
     items_size = random.randint(10, 20)
-    items_list = shuffle_list_and_return([TowarNaSztuki() if x < int(items_size / 2)
-                                          else TowarNaWage() for x in range(items_size)])
+    items_list = generate_items_list(items_size)
     current_item_index = 0
     set_current_item_info(current_item_index)
     show_towar_na_wage_item(current_item) if current_item_type == TowarNaWage else show_towar_na_sztuki_item(
@@ -62,17 +65,24 @@ def start():
 def main():
     global ui
 
-    ui = interface.Ui(start, on_item_click, on_weigh_click)
-    window = ui.window
-    window.geometry('1000x500')
-    window.resizable(False, False)
-    window.title("Symulator kasjera")
-    window.mainloop()
+    if __name__ == "__main__":
+        ui = interface.Ui(start, on_item_click, on_weigh_click)
+        window = ui.window
+        window.geometry('1000x500')
+        window.resizable(False, False)
+        window.title("Symulator kasjera")
+        window.mainloop()
 
 
 def shuffle_list_and_return(x):
     random.shuffle(x)
     return x
+
+
+def generate_items_list(size):
+    unshuffled_list = shuffle_list_and_return([TowarNaSztuki() if x < int(size / 2)
+                                               else TowarNaWage() for x in range(size)])
+    return shuffle_list_and_return(unshuffled_list)
 
 
 def set_current_item_info(index):
@@ -92,7 +102,7 @@ def show_towar_na_sztuki_item(item: TowarNaSztuki):
 
 
 def on_item_click(quantity):
-    global should_weigh_item, items_counter
+    global should_weigh_item, items_counter, user_lost, validating_finished
     try:
         if should_weigh_item:
             should_weigh_item = False
@@ -109,6 +119,7 @@ def on_item_click(quantity):
             else:
                 handle_towar_na_sztuki_click(current_item, quantity)
     except ItemUnweightedError:
+        user_lost = True
         ui.show_loss_information()
 
 
@@ -117,12 +128,16 @@ def is_towar_na_wage_weighed(item: TowarNaWage):
 
 
 def on_weigh_click():
-    global should_weigh_item
+    global should_weigh_item, user_lost
 
-    if current_item_type == TowarNaWage:
-        handle_on_weigh_click(current_item)
-    else:
-        # nowy wyjaktek dodac
+    try:
+        if current_item_type == TowarNaWage:
+            handle_on_weigh_click(current_item)
+        else:
+            raise TowarNaSztukiWeightedError
+
+    except TowarNaSztukiWeightedError:
+        user_lost = True
         ui.show_loss_information()
 
 
@@ -136,7 +151,7 @@ def handle_on_weigh_click(item: TowarNaWage):
 
 
 def show_next_item():
-    global items_counter, current_item_index, items_list
+    global items_counter, current_item_index, items_list, validating_finished
 
     current_item_index += 1
     if current_item_index != len(items_list):
@@ -144,6 +159,7 @@ def show_next_item():
         show_towar_na_wage_item(current_item) if type(current_item) == TowarNaWage else show_towar_na_sztuki_item(
             current_item)
     else:
+        validating_finished = True
         ui.show_end_information()
 
 
@@ -153,17 +169,24 @@ def increase_items_count_from_towar_na_sztuki(item: TowarNaSztuki):
 
 
 def handle_towar_na_sztuki_click(item: TowarNaSztuki, entry_quantity):
-    if item.quantity - entry_quantity < 0:
-        ui.show_loss_information()
-    else:
-        if item.quantity - entry_quantity == 0:
-            increase_items_count_from_towar_na_sztuki(current_item)
-            ui.clear_entry()
-            show_next_item()
+    global user_lost
+
+    try:
+        if item.quantity - entry_quantity < 0:
+            raise ItemTooMuchError()
         else:
-            item.quantity -= entry_quantity
-            ui.clear_entry()
-            ui.show_item(item.name + " x" + str(item.quantity))
+            if item.quantity - entry_quantity == 0:
+                increase_items_count_from_towar_na_sztuki(current_item)
+                ui.clear_entry()
+                show_next_item()
+            else:
+                item.quantity -= entry_quantity
+                ui.clear_entry()
+                ui.show_item(item.name + " x" + str(item.quantity))
+
+    except ItemTooMuchError:
+        user_lost = True
+        ui.show_loss_information()
 
 
 main()
