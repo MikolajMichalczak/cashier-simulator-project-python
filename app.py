@@ -55,7 +55,7 @@ def start():
     items_counter = 0
     start_time = datetime.now()
     items_size = random.randint(10, 20)
-    items_list = generate_items_list(items_size)
+    items_list = generate_items_list(3)
     current_item_index = 0
     set_current_item_info(current_item_index)
     show_towar_na_wage_item(current_item) if current_item_type == TowarNaWage else show_towar_na_sztuki_item(
@@ -151,7 +151,7 @@ def handle_on_weigh_click(item: TowarNaWage):
 
 
 def show_next_item():
-    global items_counter, current_item_index, items_list, validating_finished
+    global items_counter, current_item_index, items_list
 
     current_item_index += 1
     if current_item_index != len(items_list):
@@ -159,13 +159,22 @@ def show_next_item():
         show_towar_na_wage_item(current_item) if type(current_item) == TowarNaWage else show_towar_na_sztuki_item(
             current_item)
     else:
-        validating_finished = True
-        ui.show_end_information()
+        show_end_screen()
 
 
 def increase_items_count_from_towar_na_sztuki(item: TowarNaSztuki):
     global items_counter
     items_counter += item.quantity
+
+
+def show_end_screen():
+    global validating_finished, start_time, items_counter
+
+    validating_finished = True
+    difference = (datetime.now() - start_time)
+    total_seconds = difference.total_seconds()
+    avg_item_time = total_seconds/items_counter
+    ui.show_end_information("Average time to validate one item: " + "{:.3f}".format(avg_item_time) + "s")
 
 
 def handle_towar_na_sztuki_click(item: TowarNaSztuki, entry_quantity):

@@ -24,7 +24,8 @@ class Ui:
         self.frame_loss = tk.Frame(master=self.window)
         self.frame_end = tk.Frame(master=self.window)
 
-        self.try_again_btn = tk.Button(master=self.frame_loss, text="Rozpocznij ponownie", padx=15, pady=10, background="gray83",
+        self.try_again_btn = tk.Button(master=self.frame_loss, text="Rozpocznij ponownie", padx=15, pady=10,
+                                       background="gray83",
                                        font=fnt.Font(size=10),
                                        command=lambda: self.start_again())
         self.try_again_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
@@ -36,6 +37,9 @@ class Ui:
                                            font=fnt.Font(size=10),
                                            command=lambda: self.start_again_end())
         self.try_again_btn_end.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
+
+        self.lbl_avg_time = tk.Label(master=self.frame_end, font=fnt.Font(size=20))
+        self.lbl_avg_time.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
         lbl_end = tk.Label(master=self.frame_end, text="Koniec", font=fnt.Font(size=30))
         lbl_end.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
@@ -79,7 +83,8 @@ class Ui:
         self.ent_weigh.insert(0, 1)
         self.ent_weigh.configure(state=tk.DISABLED)
 
-        self.next_client_btn = tk.Button(master=self.frame_left, text="Następny klient", padx=15, pady=10, width=13, background="gray83",
+        self.next_client_btn = tk.Button(master=self.frame_left, text="Następny klient", padx=15, pady=10, width=13,
+                                         background="gray83",
                                          font=fnt.Font(size=10),
                                          command=lambda: self.hide_next_client_btn_and_start())
         self.next_client_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
@@ -136,9 +141,10 @@ class Ui:
         self.frame_right.pack_forget()
         self.frame_loss.pack(expand=True, fill=tk.BOTH)
 
-    def show_end_information(self):
+    def show_end_information(self, time_text):
         self.frame_left.pack_forget()
         self.frame_right.pack_forget()
+        self.lbl_avg_time['text'] = time_text
         self.frame_end.pack(expand=True, fill=tk.BOTH)
 
     def hide_loss_information(self):
