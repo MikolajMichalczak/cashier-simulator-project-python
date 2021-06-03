@@ -94,6 +94,12 @@ class Ui:
                                   command=lambda: self.item_click_callback(int(self.ent_weigh.get())))
 
     def add_number_to_entry(self, number):
+        """Metoda dopisująca cyfrę do okienka (entry)
+
+            Attributes:
+                number - dopisywana cyfra
+            """
+
         self.ent_weigh.configure(state=tk.NORMAL)
         if self.cleared_entry:
             self.ent_weigh.delete(0, tk.END)
@@ -107,6 +113,8 @@ class Ui:
         self.ent_weigh.configure(state=tk.DISABLED)
 
     def clear_entry(self):
+        """Metoda czyszcząca okienko (entry)"""
+
         self.ent_weigh.configure(state=tk.NORMAL)
         self.ent_weigh.delete(0, tk.END)
         self.ent_weigh.insert(0, 1)
@@ -114,6 +122,8 @@ class Ui:
         self.cleared_entry = True
 
     def backspace_entry(self):
+        """Metoda usuwająca pojedynczą cyfre z okienka (entry)"""
+
         self.ent_weigh.configure(state=tk.NORMAL)
         if len(self.ent_weigh.get()) == 1:
             self.ent_weigh.delete(0, tk.END)
@@ -125,44 +135,66 @@ class Ui:
         self.ent_weigh.configure(state=tk.DISABLED)
 
     def hide_next_client_btn_and_start(self):
+        """Metoda ukrywająca przycisk "następny klient" i wywołująca callback ze startem aplikacji"""
+
         self.next_client_btn.pack_forget()
         self.start_callback()
 
     def show_next_client_btn(self):
+        """Metoda pokazująca przycisk "następny klient" """
+
         self.item_btn.pack_forget()
         self.next_client_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
     def show_item(self, text):
+        """Metoda zmieniająca tekst przycisku towaru (pokazująca kolejny towar) """
+
         self.item_btn['text'] = text
         self.item_btn.pack(side=tk.BOTTOM, expand=True, fill=tk.NONE)
 
     def show_loss_information(self):
+        """Metoda pokazująca ekran informujący o przegranej"""
+
         self.frame_left.pack_forget()
         self.frame_right.pack_forget()
         self.frame_loss.pack(expand=True, fill=tk.BOTH)
 
     def show_end_information(self, time_text):
+        """Metoda pokazująca ekran informujący o skasowaniu wszystkich przedmiotów ( w tym średni czas)
+
+            Attributes:
+                time_text - tekst zawierający średni czas kasowania pojedynczego towaru
+            """
+
         self.frame_left.pack_forget()
         self.frame_right.pack_forget()
         self.lbl_avg_time['text'] = time_text
         self.frame_end.pack(expand=True, fill=tk.BOTH)
 
     def hide_loss_information(self):
+        """Metoda ukrywająca ekran z informacją o przegranej """
+
         self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         self.frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         self.frame_loss.pack_forget()
 
     def hide_end_information(self):
+        """Metoda ukrywająca ekran z informacją o skasowaniu wszystkich towarów"""
+
         self.frame_left.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         self.frame_right.pack(side=tk.LEFT, expand=True, fill=tk.BOTH)
         self.frame_end.pack_forget()
 
     def start_again(self):
+        """Metoda przywracająca początkowy wygląd interfejsu (rozpoczęcie od początku po przegranej)"""
+
         self.clear_entry()
         self.hide_loss_information()
         self.show_next_client_btn()
 
     def start_again_end(self):
+        """Metoda przywracająca początkowy wygląd interfejsu (rozpoczęcie od początku po skasowaniu wszystkich
+        towarów) """
         self.clear_entry()
         self.hide_end_information()
         self.show_next_client_btn()

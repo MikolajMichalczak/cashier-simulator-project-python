@@ -6,6 +6,8 @@ import interface
 
 
 class TowarNaWageUnweightedTest(unittest.TestCase):
+    """Test polegający na próbie skasowania towaru na wagę jakby był towarem na sztuki (oczekiwana informacja o
+    przegranej). """
 
     def test5(self):
         ui = interface.Ui(app.start, app.on_item_click, app.on_weigh_click)
@@ -29,4 +31,4 @@ class TowarNaWageUnweightedTest(unittest.TestCase):
         window.update()
         time.sleep(1)
 
-        self.assertEqual(app.user_lost, True)
+        self.assertEqual(app.user_lost, True)  # sprawdzenie wartości flagi informującej o przegranej

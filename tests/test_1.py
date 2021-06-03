@@ -6,6 +6,7 @@ import interface
 
 
 class TowarNaSztukiValidateOneByOneTest(unittest.TestCase):
+    """Test polegający na skasowaniu towaru na sztuki po klikając na niego kilka razy."""
 
     def test1(self):
         ui = interface.Ui(app.start, app.on_item_click, app.on_weigh_click)
@@ -29,13 +30,4 @@ class TowarNaSztukiValidateOneByOneTest(unittest.TestCase):
             window.update()
             time.sleep(0.4)
 
-        self.assertEqual(app.current_item_index, 2)
-
-    # def test_sum(self):
-    #     self.assertEqual(sum([1, 2, 3]), 6, "Should be 6")
-    #
-    # def test_sum_tuple(self):
-    #     self.assertEqual(sum((1, 2, 2)), 6, "Should be 6")
-
-# if __name__ == '__main__':
-#     unittest.main()
+        self.assertEqual(app.current_item_index, 2)  # sprawdzenie przejścia do następnego indeksu na liście

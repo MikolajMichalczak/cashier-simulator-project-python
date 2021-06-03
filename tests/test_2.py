@@ -6,6 +6,8 @@ import interface
 
 
 class TowarNaSztukiValidateAtOnceTest(unittest.TestCase):
+    """Test polegający na Skasowaniu towaru na sztuki wpisując jego liczność i klikając raz. Wymagane jest
+    resetowanie pola do wartosci 1. """
 
     def test2(self):
         ui = interface.Ui(app.start, app.on_item_click, app.on_weigh_click)
@@ -28,4 +30,5 @@ class TowarNaSztukiValidateAtOnceTest(unittest.TestCase):
         window.update()
         time.sleep(1)
 
-        self.assertEqual(app.current_item_index, 2)
+        self.assertEqual(app.current_item_index, 2)  # sprawdzenie przejścia do następnego indeksu na liście
+        self.assertEqual(int(app.ui.ent_weigh.get()), 1)  # sprawdzenie resetowania pola do wartości 1

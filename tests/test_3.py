@@ -6,6 +6,8 @@ import interface
 
 
 class TowarNaSztukiTooMuchTest(unittest.TestCase):
+    """Test polegający na próbie skasowania towaru na sztuki wpisując zbyt dużą liczność (oczekiwana informacja o
+    przegranej). """
 
     def test3(self):
         ui = interface.Ui(app.start, app.on_item_click, app.on_weigh_click)
@@ -26,4 +28,4 @@ class TowarNaSztukiTooMuchTest(unittest.TestCase):
 
         app.handle_towar_na_sztuki_click(app.current_item, current_item.quantity + 1)
 
-        self.assertEqual(app.user_lost, True)
+        self.assertEqual(app.user_lost, True)  # sprawdzenie wartości flagi informującej o przegranej

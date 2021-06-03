@@ -6,6 +6,7 @@ import interface
 
 
 class ValidateAllItemsTest(unittest.TestCase):
+    """Test polegający na skasowaniu wszystkich towarów (oczekiwane okno z podsumowaniem symulacji). """
 
     def test6(self):
         ui = interface.Ui(app.start, app.on_item_click, app.on_weigh_click)
@@ -41,4 +42,5 @@ class ValidateAllItemsTest(unittest.TestCase):
         window.update()
         time.sleep(1)
 
-        self.assertEqual(app.validating_finished, True)
+        self.assertEqual(app.validating_finished, True)  # sprawdzenie wartości flagi informującej o skasowaniu
+        # wszystkich towarów
